@@ -6,11 +6,13 @@ export default function balanceRoute(req, res) {
     //check authentication
     const user = checkToken(req);
     // return res.status(403).json({ok: false,message: "You do not have permission to check balance",});
-
+    if(user.isAdmin === false)
+      return res.status(403).json({ok: false,message: "You do not have permission to check balance",})
     const users = readUsersDB();
     //find user in DB and get their money value
-
+    const money = users.find(x => x.username === user.username).money
     //return response
+    return res.json({ok: true, money: money})
   } else {
     return res.status(400).json({ ok: false, message: "Invalid HTTP Method" });
   }
